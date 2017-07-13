@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using NHibernate.Util;
 using NUnit.Framework;
 
 namespace NHibernate.Test.NHSpecificTest.NH2880
@@ -46,6 +47,7 @@ namespace NHibernate.Test.NHSpecificTest.NH2880
 
 				sessionMemoryStream = new MemoryStream();
 				BinaryFormatter writer = new BinaryFormatter();
+				writer.SurrogateSelector = new ConsoleTraceSurrogateSelector();
 				writer.Serialize(sessionMemoryStream, s);
 			}
 

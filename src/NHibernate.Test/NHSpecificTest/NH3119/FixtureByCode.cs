@@ -5,6 +5,7 @@ using NHibernate.Cfg;
 using NHibernate.Cfg.MappingSchema;
 using NHibernate.Linq;
 using NHibernate.Mapping.ByCode;
+using NHibernate.Util;
 using NUnit.Framework;
 
 namespace NHibernate.Test.NHSpecificTest.NH3119
@@ -84,6 +85,7 @@ namespace NHibernate.Test.NHSpecificTest.NH3119
 		{
 			MemoryStream configMemoryStream = new MemoryStream();
 			BinaryFormatter writer = new BinaryFormatter();
+			writer.SurrogateSelector = new ConsoleTraceSurrogateSelector();
 			writer.Serialize(configMemoryStream, cfg);
 
 			configMemoryStream.Seek(0, SeekOrigin.Begin);

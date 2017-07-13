@@ -7,6 +7,7 @@ using NHibernate.Engine;
 using NHibernate.Mapping;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Type;
+using NHibernate.Util;
 using NUnit.Framework;
 
 namespace NHibernate.Test.NHSpecificTest.NH3383
@@ -69,6 +70,7 @@ namespace NHibernate.Test.NHSpecificTest.NH3383
 			using (MemoryStream configMemoryStream = new MemoryStream())
 			{
 				BinaryFormatter formatter = new BinaryFormatter();
+				formatter.SurrogateSelector = new ConsoleTraceSurrogateSelector();
 				formatter.Serialize(configMemoryStream, classMapping);
 				configMemoryStream.Position = 0;
 				deserializedClassMapping = (RootClass)formatter.Deserialize(configMemoryStream);

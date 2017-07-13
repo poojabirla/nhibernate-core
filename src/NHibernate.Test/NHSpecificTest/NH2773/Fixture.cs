@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using NHibernate.Util;
 using NUnit.Framework;
 
 namespace NHibernate.Test.NHSpecificTest.NH2773 {
@@ -51,6 +52,7 @@ namespace NHibernate.Test.NHSpecificTest.NH2773 {
 
             using (MemoryStream sessionMemoryStream = new MemoryStream()) {
                BinaryFormatter formatter = new BinaryFormatter();
+               formatter.SurrogateSelector = new ConsoleTraceSurrogateSelector();
                formatter.Serialize(sessionMemoryStream, session);
 
                sessionMemoryStream.Seek(0, SeekOrigin.Begin);

@@ -2824,6 +2824,7 @@ namespace NHibernate.Test.Legacy
 			// serialize and then deserialize the session.
 			Stream stream = new MemoryStream();
 			IFormatter formatter = new BinaryFormatter();
+			formatter.SurrogateSelector = new ConsoleTraceSurrogateSelector();
 			formatter.Serialize(stream, s);
 
 			s.Close();
@@ -4678,6 +4679,7 @@ namespace NHibernate.Test.Legacy
 			// serialize the session.
 			Stream stream = new MemoryStream();
 			IFormatter formatter = new BinaryFormatter();
+			formatter.SurrogateSelector = new ConsoleTraceSurrogateSelector();
 			formatter.Serialize(stream, s);
 
 			// close the original session

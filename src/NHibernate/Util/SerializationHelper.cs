@@ -15,6 +15,7 @@ namespace NHibernate.Util
 			using (MemoryStream ms = new MemoryStream())
 			{
 				BinaryFormatter formatter = new BinaryFormatter();
+				formatter.SurrogateSelector = new ConsoleTraceSurrogateSelector();
 				formatter.Serialize(ms, obj);
 				return ms.ToArray();
 			}

@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using NHibernate.Util;
 using NUnit.Framework;
 
 namespace NHibernate.Test.DynamicProxyTests.InterfaceProxySerializationTests
@@ -26,6 +27,7 @@ namespace NHibernate.Test.DynamicProxyTests.InterfaceProxySerializationTests
 			using (Stream stream = new MemoryStream())
 			{
 				IFormatter formatter = new BinaryFormatter();
+				formatter.SurrogateSelector = new ConsoleTraceSurrogateSelector();
 				formatter.Serialize(stream, s);
 
 				// Close the original session

@@ -8,6 +8,7 @@ using NHibernate.DomainModel;
 using NHibernate.Engine;
 using NHibernate.Criterion;
 using NHibernate.Mapping;
+using NHibernate.Util;
 using NUnit.Framework;
 using Single=NHibernate.DomainModel.Single;
 
@@ -660,6 +661,7 @@ namespace NHibernate.Test.Legacy
 			s.Disconnect();
 			MemoryStream stream = new MemoryStream();
 			BinaryFormatter f = new BinaryFormatter();
+			f.SurrogateSelector = new ConsoleTraceSurrogateSelector();
 			f.Serialize(stream, s);
 			s.Close();
 			stream.Position = 0;

@@ -4,6 +4,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using NHibernate.Cfg;
 using NHibernate.DomainModel;
 using NHibernate.Tool.hbm2ddl;
+using NHibernate.Util;
 using NUnit.Framework;
 
 namespace NHibernate.Test.CfgTest
@@ -29,6 +30,7 @@ namespace NHibernate.Test.CfgTest
 			cfg.AddResource("NHibernate.DomainModel.ParentChild.hbm.xml", assembly);
 
 			var formatter = new BinaryFormatter();
+			formatter.SurrogateSelector = new ConsoleTraceSurrogateSelector();
 			var memoryStream = new MemoryStream();
 			formatter.Serialize(memoryStream, cfg);
 			memoryStream.Position = 0;

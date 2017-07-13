@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using NHibernate.Util;
 using NUnit.Framework;
 
 namespace NHibernate.Test.NHSpecificTest.NH3487
@@ -54,6 +55,7 @@ namespace NHibernate.Test.NHSpecificTest.NH3487
 		public void CanDeserializeSessionWithEntityHashCollision()
 		{
 			IFormatter formatter = new BinaryFormatter();
+			formatter.SurrogateSelector = new ConsoleTraceSurrogateSelector();
 			byte[] serializedSessionArray;
 
 			using (ISession session = OpenSession())

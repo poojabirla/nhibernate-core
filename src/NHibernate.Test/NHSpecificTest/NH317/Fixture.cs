@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using NHibernate.Proxy;
+using NHibernate.Util;
 using NUnit.Framework;
 
 namespace NHibernate.Test.NHSpecificTest.NH317
@@ -44,6 +45,7 @@ namespace NHibernate.Test.NHSpecificTest.NH317
 
 			// Serialize
 			IFormatter formatter = new BinaryFormatter();
+			formatter.SurrogateSelector = new ConsoleTraceSurrogateSelector();
 			MemoryStream ms = new MemoryStream();
 			formatter.Serialize(ms, nodeProxy);
 
