@@ -50,6 +50,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NHibernate.DomainModel\NHibernate.DomainModel.csproj" />
+    <ProjectReference Include="..\NHibernate.Driver.AdoNet\NHibernate.Driver.AdoNet.csproj" />
+    <ProjectReference Include="..\NHibernate.Driver.FirebirdClient\NHibernate.Driver.FirebirdClient.csproj" />
+    <ProjectReference Include="..\NHibernate.Driver.MySql\NHibernate.Driver.MySql.csproj" />
+    <ProjectReference Include="..\NHibernate.Driver.Npgsql\NHibernate.Driver.Npgsql.csproj" />
+    <ProjectReference Include="..\NHibernate.Driver.Odbc\NHibernate.Driver.Odbc.csproj" />
+    <ProjectReference Include="..\NHibernate.Driver.OleDb\NHibernate.Driver.OleDb.csproj" />
+    <ProjectReference Include="..\NHibernate.Driver.Oracle.ManagedDataAccess\NHibernate.Driver.Oracle.ManagedDataAccess.csproj" />
+    <ProjectReference Include="..\NHibernate.Driver.SqlClient\NHibernate.Driver.SqlClient.csproj" />
+    <ProjectReference Include="..\NHibernate.Driver.SQLite\NHibernate.Driver.SQLite.csproj" />
+    <ProjectReference Include="..\NHibernate.Driver.SqlServer.Compact\NHibernate.Driver.SqlServer.Compact.csproj" />
     <ProjectReference Include="..\NHibernate\NHibernate.csproj" />
   </ItemGroup>
 

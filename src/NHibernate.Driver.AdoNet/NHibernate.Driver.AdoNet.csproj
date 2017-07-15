@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../build-common/NHibernate.props" />
+
+  <PropertyGroup>
+    <Description>Driver for all ADO.Net data providers not covered by other NuGet packages. To be used with NHibernate 5.  Includes: CsharpSqliteDriver, DB2400Driver, DB2Driver, DotConnectMySqlDriver, IfxDriver, IngresDriver, OracleClientDriver, OracleDataClientDriver, OracleLiteDataClientDriver, SybaseAsaClientDriver, SybaseAseClientDriver, SybaseSQLAnywhereDotNet4Driver, and SybaseSQLAnywhereDriver.</Description>
+    <PackageTags>NHibernate; Driver; ADO.Net; sqlite; db2400; db2; mysql; ifx; ingres; oracle; sybase; sqlanywhere; sql anywhere; ianywhere</PackageTags>
+
+    <TargetFramework>net461</TargetFramework>
+    <NoWarn>$(NoWarn);3001;3002;3003;3005;1591</NoWarn>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\NHibernate.snk</AssemblyOriginatorKeyFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\NHibernate.snk" Link="NHibernate.snk" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NHibernate\NHibernate.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -12,7 +12,7 @@ echo ========================= NHIBERNATE BUILD MENU ==========================
 echo --- TESTING ---
 echo B. (Step 1) Set up a new test configuration for a particular database.
 echo C. (Step 2) Activate a test configuration.
-echo D. (Step 3) Run tests using active configuration.
+echo D. (Step 3) Run tests using active configuration (Needs built in Visual Studio).
 echo.
 echo --- BUILD ---
 echo E. Build NHibernate (Debug)
@@ -74,47 +74,47 @@ goto test-setup-generic
 :test-setup-sqlservercex86
 set CONFIG_NAME=SqlServerCe32
 set PLATFORM=AnyCPU
-set LIB_FILES=lib\teamcity\SqlServerCe\*.dll
-set LIB_FILES2=lib\teamcity\SqlServerCe\X86\*.dll
+set LIB_FILES=
+set LIB_FILES2=
 goto test-setup-generic
 
 :test-setup-sqlservercex64
 set CONFIG_NAME=SqlServerCe64
 set PLATFORM=AnyCPU
-set LIB_FILES=lib\teamcity\sqlServerCe\*.dll
-set LIB_FILES2=lib\teamcity\sqlServerCe\AMD64\*.dll
+set LIB_FILES=
+set LIB_FILES2=
 goto test-setup-generic
 
 :test-setup-firebirdx86
 set CONFIG_NAME=FireBird
 set PLATFORM=x86
-set LIB_FILES=lib\teamcity\firebird\*.dll
+set LIB_FILES=
 goto test-setup-generic
 
 :test-setup-firebirdx64
 set CONFIG_NAME=FireBird
 set PLATFORM=x64
-set LIB_FILES=lib\teamcity\firebird\*.dll
+set LIB_FILES=
 goto test-setup-generic
 
 :test-setup-sqlitex86
 set CONFIG_NAME=SQLite
 set PLATFORM=x86
-set LIB_FILES=lib\teamcity\sqlite\x86\*
+set LIB_FILES=
 set LIB_FILES2=
 goto test-setup-generic
 
 :test-setup-sqlitex64
 set CONFIG_NAME=SQLite
 set PLATFORM=x64
-set LIB_FILES=lib\teamcity\sqlite\x64\*
+set LIB_FILES=
 set LIB_FILES2=
 goto test-setup-generic
 
 :test-setup-postgresql
 set CONFIG_NAME=PostgreSQL
 set PLATFORM=AnyCPU
-set LIB_FILES=lib\teamcity\postgresql\*.dll
+set LIB_FILES=
 set LIB_FILES2=
 goto test-setup-generic
 
@@ -161,7 +161,9 @@ echo Configuration activated.
 goto main-menu
 
 :test-run
-start "nunit3-console" cmd /K %NUNIT% --x86 --agents=1 --process=separate NHibernate.nunit
+SET NUNITPLATFORM=
+IF /I "%PLATFORM%" NEQ "x64" set NUNITPLATFORM=--x86
+start "nunit3-console" cmd /K %NUNIT% %NUNITPLATFORM% --agents=1 --process=separate NHibernate.nunit
 goto main-menu
 
 rem :build-test

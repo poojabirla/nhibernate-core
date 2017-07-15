@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../build-common/NHibernate.props" />
+
+  <PropertyGroup>
+    <Description>Driver for Odbc DataProvider to be used with NHibernate 5.  Always look for a native .NET DataProvider before using the Odbc DataProvider.</Description>
+    <PackageTags>NHibernate; Driver; ODBC</PackageTags>
+
+    <TargetFramework>net461</TargetFramework>
+    <NoWarn>$(NoWarn);3001;3002;3003;3005;1591</NoWarn>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\NHibernate.snk</AssemblyOriginatorKeyFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\NHibernate.snk" Link="NHibernate.snk" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NHibernate\NHibernate.csproj" />
+  </ItemGroup>
+
+</Project>

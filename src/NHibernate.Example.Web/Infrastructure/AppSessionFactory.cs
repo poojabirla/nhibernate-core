@@ -19,17 +19,19 @@ namespace NHibernate.Example.Web.Infrastructure
 			mapper.AddMapping<ItemMap>();
 			var domainMapping = mapper.CompileMappingForAllExplicitlyAddedEntities();
 			
-			Configuration = new Configuration();
-			Configuration.DataBaseIntegration(db =>
-				{
-					db.ConnectionString = @"Server=(local)\SQLEXPRESS;initial catalog=nhibernate;Integrated Security=true";
-					db.Dialect<MsSql2008Dialect>();
-					db.Driver<SqlClientDriver>();
-				})
-				.AddMapping(domainMapping);
-			Configuration.SessionFactory().GenerateStatistics();
+			var cfg = new Configuration();
+			cfg.SessionFactory()
+				.GenerateStatistics()
+				.Integrate
+					.Using<MsSql2008Dialect>()
+					.Connected
+						.BySqlClientDriver()
+						.Using(@"Server=(local)\SQLEXPRESS;initial catalog=nhibernate;Integrated Security=true");
 
-			SessionFactory = Configuration.BuildSessionFactory();
+			cfg.AddMapping(domainMapping);
+
+			Configuration = cfg;
+			SessionFactory = cfg.BuildSessionFactory();
 		}
 
 		public ISession OpenSession()
