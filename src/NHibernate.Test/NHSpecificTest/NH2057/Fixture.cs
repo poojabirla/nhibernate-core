@@ -7,6 +7,7 @@ namespace NHibernate.Test.NHSpecificTest.NH2057
 	[TestFixture]
 	public class Fixture : BugTestCase
 	{
+#if !NETCOREAPP2_0
 		[Test]
 		public void WillCloseWhenUsingDTC()
 		{
@@ -25,5 +26,6 @@ namespace NHibernate.Test.NHSpecificTest.NH2057
 			// following scope disposal. Sleep a bit for accounting for this.
 			Assert.That(() => s.IsOpen, Is.False.After(500, 100));
 		}
+#endif
 	}
 }
