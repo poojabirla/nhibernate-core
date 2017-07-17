@@ -2827,6 +2827,7 @@ namespace NHibernate.Test.Legacy
 			txn.Commit();
 			s.Disconnect();
 
+#if !NETCOREAPP2_0
 			// serialize and then deserialize the session.
 			Stream stream = new MemoryStream();
 			IFormatter formatter = new BinaryFormatter();
@@ -2837,6 +2838,7 @@ namespace NHibernate.Test.Legacy
 			stream.Position = 0;
 			s = (ISession) formatter.Deserialize(stream);
 			stream.Close();
+#endif
 
 			s.Reconnect();
 			txn = s.BeginTransaction();
@@ -2875,6 +2877,7 @@ namespace NHibernate.Test.Legacy
 			txn.Commit();
 			s.Disconnect();
 
+#if !NETCOREAPP2_0
 			// serialize and then deserialize the session.
 			stream = new MemoryStream();
 			formatter.Serialize(stream, s);
@@ -2884,6 +2887,7 @@ namespace NHibernate.Test.Legacy
 			stream.Position = 0;
 			s = (ISession) formatter.Deserialize(stream);
 			stream.Close();
+#endif
 
 			Qux nonexistentQux = (Qux) s.Load(typeof(Qux), (long) 666); //nonexistent
 			Assert.IsNotNull(nonexistentQux, "even though it doesn't exists should still get a proxy - no db hit.");
@@ -4639,6 +4643,7 @@ namespace NHibernate.Test.Legacy
 			s.Close();
 		}
 
+#if !NETCOREAPP2_0
 		[Test]
 		public void ProxyArray()
 		{
@@ -4691,6 +4696,7 @@ namespace NHibernate.Test.Legacy
 
 			s.Close();
 		}
+#endif
 
 		[Test]
 		public void Cache()
@@ -5439,7 +5445,7 @@ namespace NHibernate.Test.Legacy
 			}
 		}
 
-		#region NHibernate specific tests
+#region NHibernate specific tests
 
 		[Test]
 		public void Formula()
@@ -5546,6 +5552,6 @@ namespace NHibernate.Test.Legacy
 			}
 		}
 
-		#endregion
+#endregion
 	}
 }
