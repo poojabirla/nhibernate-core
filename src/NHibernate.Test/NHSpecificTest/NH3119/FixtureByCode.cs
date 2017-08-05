@@ -42,6 +42,10 @@ namespace NHibernate.Test.NHSpecificTest.NH3119
 				Assert.Ignore("Test only works with reflection optimization enabled");
 			}
 
+#if RELEASE
+			Assert.Ignore("On newer .NET frameworks, NHibernate.Bytecode.Lightweight.ReflectionOptimizer.CreateInstance is optimized to a [Lightweight Function] in release mode.");
+#endif
+
 			using (ISession session = OpenSession())
 			using (ITransaction transaction = session.BeginTransaction())
 			{
@@ -64,6 +68,7 @@ namespace NHibernate.Test.NHSpecificTest.NH3119
 				transaction.Commit();
 			}
 		}
+
 
 		[Test]
 		public void PocoComponentTuplizer_Instantiate_UsesReflectonOptimizer()
