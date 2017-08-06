@@ -23,7 +23,8 @@ namespace NHibernate.Test
 		public static HibernateConfiguration GetTestAssemblyHibernateConfiguration()
 		{
 			HibernateConfiguration config;
-			string assemblyPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"NHibernate.Test.dll");
+			string assemblyPath = Path.Combine(TestContext.CurrentContext.TestDirectory, Path.GetFileName(typeof(TestsContext).Assembly.Location));
+
 			var configuration = ConfigurationManager.OpenExeConfiguration(assemblyPath);
 			ConfigurationSection configSection = configuration.GetSection(CfgXmlHelper.CfgSectionName);
 

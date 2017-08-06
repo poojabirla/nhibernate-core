@@ -6,6 +6,7 @@
 
     <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
     <NoWarn>$(NoWarn);3001;3002;3003;3005</NoWarn>
+    <GenerateProgramFile>false</GenerateProgramFile>
 
     <DisableImplicitPackageTargetFallback>true</DisableImplicitPackageTargetFallback>
     <IsPackable>false</IsPackable>
@@ -68,6 +69,7 @@
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.7.6" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.4.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.8.0" />
+    <PackageReference Include="NUnitLite" Version="3.7.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
   </ItemGroup>
 

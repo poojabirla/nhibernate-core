@@ -7,6 +7,7 @@
 
     <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
     <NoWarn>$(NoWarn);3001;3002;3003;3005</NoWarn>
+    <GenerateProgramFile>false</GenerateProgramFile>
 
     <DisableImplicitPackageTargetFallback>true</DisableImplicitPackageTargetFallback>
     <IsPackable>false</IsPackable>
@@ -21,6 +22,7 @@
     <PackageReference Include="nunit" Version="3.7.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.8.0" />
+    <PackageReference Include="NUnitLite" Version="3.7.2" />
     <PackageReference Include="FirebirdSql.Data.FirebirdClient" Version="5.9.0.1" />
     <PackageReference Include="Npgsql" Version="3.2.5" />
   </ItemGroup>
