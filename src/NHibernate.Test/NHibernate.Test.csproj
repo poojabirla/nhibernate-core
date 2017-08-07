@@ -48,6 +48,7 @@
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.7.6" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.3.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.8.0" />
+    <PackageReference Include="Appveyor.TestLogger" version="1.2.10-dev" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
   </ItemGroup>
 

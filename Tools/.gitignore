@@ -1,3 +1,5 @@
 nuget.exe
 NUnit.*
-vswhere.*
+vswhere/
+packages.config.md5sum
+Cake/
