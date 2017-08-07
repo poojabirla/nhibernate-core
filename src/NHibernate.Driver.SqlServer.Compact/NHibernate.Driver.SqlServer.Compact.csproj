@@ -24,4 +24,24 @@
     <ProjectReference Include="..\NHibernate\NHibernate.csproj" />
   </ItemGroup>
 
+  <!-- 
+    Since Microsoft.SqlServer.Compact was using Install.ps1, and that doesn't work with the new .csproj,
+    need include the binaries ourselves.  We do that through .target files in a build\ directory.
+  -->
+  <ItemGroup>
+    <Content Include="build\**\*.*">
+      <Pack>true</Pack>
+      <PackagePath>build\</PackagePath>
+    </Content>
+  </ItemGroup>
+
+  <!-- This next section is in addition to the .target file for project references. -->
+  <ItemGroup>
+    <Content Include="$(NuGetPackageRoot)microsoft.sqlserver.compact\4.0.8876.1\NativeBinaries\**\*.*">
+      <Pack>false</Pack>
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

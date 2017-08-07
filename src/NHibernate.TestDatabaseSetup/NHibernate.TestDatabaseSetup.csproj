@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NHibernate.Test\NHibernate.Test.csproj" />
+    <ProjectReference Include="..\NHibernate.Driver.SqlServer.Compact\NHibernate.Driver.SqlServer.Compact.csproj" />
   </ItemGroup>
 
   <ItemGroup>
