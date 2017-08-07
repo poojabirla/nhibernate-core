@@ -1,0 +1,86 @@
+version: "{build}"
+
+# Skipping commits affecting specific files (GitHub only).
+skip_commits:
+  files:
+    - doc/*
+
+# Build worker image (VM template)
+image: Visual Studio 2017
+
+# scripts that are called at very beginning, before repo cloning
+init:
+  - cmd: |-
+      echo %APPVEYOR_BUILD_VERSION%
+      echo %NHIBERNATE_DATABASE_TEMPLATE%
+      echo %DOTNET_FRAMEWORK%
+
+# fetch repository as zip archive
+#shallow_clone: true                 # default is "false"
+
+# set clone depth
+clone_depth: 5                      # clone entire repository history if not defined
+
+environment:
+  global:
+    # Set the DOTNET_SKIP_FIRST_TIME_EXPERIENCE environment variable to stop wasting time caching packages
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+    # Don't report back to the mothership
+    DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  matrix:
+    - NHIBERNATE_DATABASE_TEMPLATE: MSSQL.cfg.xml
+      NHIBERNATE_CONNECTION_STRING: Server=(local)\SQL2014;Database=master;User ID=sa;Password=Password12!
+      NHIBERNATE_DIALECT: NHibernate.Dialect.MsSql2012Dialect
+      DOTNET_FRAMEWORK: net461
+      TARGET_PLATFORM: x64
+
+    - NHIBERNATE_DATABASE_TEMPLATE: MySql.cfg.xml
+      NHIBERNATE_CONNECTION_STRING: Database=nhibernate;Server=localhost;Port=3306;User Id=root;Password=Password12!;
+      NHIBERNATE_DIALECT: NHibernate.Dialect.MySQL55InnoDBDialect
+      DOTNET_FRAMEWORK: net461
+      TARGET_PLATFORM: x64
+
+    - NHIBERNATE_DATABASE_TEMPLATE: PostgreSQL.cfg.xml
+      NHIBERNATE_CONNECTION_STRING: Server=localhost;Port=5432;Database=nhibernate;User ID=postgres;Password=Password12!;Enlist=true;
+      NHIBERNATE_DIALECT: NHibernate.Dialect.PostgreSQL83Dialect
+      DOTNET_FRAMEWORK: net461
+      TARGET_PLATFORM: x64
+
+# build cache to preserve files/folders between builds
+cache:
+#  - '%LocalAppData%\NuGet\v3-cache'  # NuGet v3.x http-cache
+#  - '%USERPROFILE%\.nuget\packages -> **\*.csproj' # global-packages cache
+
+# scripts that run after cloning repository
+install:
+  - ps: |-
+      Invoke-WebRequest 'https://aka.ms/dotnet-sdk-2.0.0-preview2-win-x64' -OutFile "$env:appveyor_build_folder/dotnet-sdk-win-x64.exe"
+      & "$env:appveyor_build_folder/dotnet-sdk-win-x64.exe" /install /quiet /norestart
+  - echo max_prepared_transactions = 100 >> "C:\Program Files\PostgreSQL\9.6\data\postgresql.conf"
+
+# enable service required for build/tests
+services:
+  - mssql2014           # start SQL Server 2014 Express
+  - mysql               # start MySQL 5.6 service
+  - postgresql96        # start PostgreSQL 9.6 service
+
+nuget:
+  disable_publish_on_pr: true
+
+platform: Any CPU
+configuration: Release
+
+# scripts to run before build
+before_build:
+  - ps: |-
+      $env:MYSQL_PWD="Password12!"
+      & "C:\Program Files\MySQL\MySQL Server 5.7\bin\mysql" -e "create database nhibernate;" --user=root
+
+build_script:
+  - ps: .\build.ps1 -Target "Appveyor"
+
+# Run tests as part of build script instead of automatic tests
+test: off
+
+artifacts:
+  - path: '**\Release\*.nupkg'
