@@ -24,7 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.105.1" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.105.1">
+      <IncludeAssets>All</IncludeAssets>
+      <ExcludeAssets>none</ExcludeAssets>
+      <PrivateAssets>analyzers</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
