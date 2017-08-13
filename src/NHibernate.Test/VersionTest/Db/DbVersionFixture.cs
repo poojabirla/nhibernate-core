@@ -36,7 +36,7 @@ namespace NHibernate.Test.VersionTest.Db
 			// Setting the scale to 2 still causes failure for two thirds of tries, due to 3ms/7ms being truncated in such case
 			// with ODBC and SQL Server 2008+ Client, which is rejected bu ODBC.
 			// (Affects NH-1756 too.)
-			return !(factory.ConnectionProvider.Driver is OdbcDriver);
+			return !(factory.ConnectionProvider.Driver.IsOdbcDriver());
 		}
 
 		[Test]

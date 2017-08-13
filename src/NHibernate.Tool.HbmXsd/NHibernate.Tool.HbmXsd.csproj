@@ -7,10 +7,17 @@
     <AssemblyName>HbmXsd</AssemblyName>
     <AssemblyTitle>NHibernate.Tool.HbmXsd</AssemblyTitle>
     <OutputType>Exe</OutputType>
+
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="..\NHibernate\nhibernate-mapping.xsd" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+    <PackageReference Include="System.CodeDom" Version="4.4.0" />
+    <!-- Still missing System.Xml.Serialization.XmlCodeExporter -->
   </ItemGroup>
 
 </Project>

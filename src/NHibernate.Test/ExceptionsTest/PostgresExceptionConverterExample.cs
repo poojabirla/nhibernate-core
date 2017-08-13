@@ -13,7 +13,9 @@ namespace NHibernate.Test.ExceptionsTest
 			var sqle = ADOExceptionHelper.ExtractDbException(exInfo.SqlException) as DbException;
 			if (sqle != null)
 			{
-				string code = (string)sqle.GetType().GetProperty("Code").GetValue(sqle, null);
+				var exceptionType = sqle.GetType();
+				var propertyInfo = exceptionType.GetProperty("SqlState") ?? exceptionType.GetProperty("Code"); // Renamed since Npgsql v3.1.0
+				string code = (string)propertyInfo?.GetValue(sqle, null);
 
 				if (code == "23503")
 				{

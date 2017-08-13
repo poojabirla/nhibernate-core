@@ -191,7 +191,7 @@ namespace NHibernate.Cfg
 		private static IBytecodeProvider BytecodeProviderInstance;
 		private static bool EnableReflectionOptimizer;
 
-		private static readonly IInternalLogger log = LoggerProvider.LoggerFor(typeof(Environment));
+		private static readonly IInternalLogger log;
 
 		/// <summary>
 		/// Issue warnings to user when any obsolete property names are used.
@@ -202,6 +202,8 @@ namespace NHibernate.Cfg
 
 		static Environment()
 		{
+			log = LoggerProvider.LoggerFor(typeof(Environment));
+
 			// Computing the version string is a bit expensive, so do it only if logging is enabled.
 			if (log.IsInfoEnabled)
 			{
@@ -209,27 +211,27 @@ namespace NHibernate.Cfg
 			}
 
 			GlobalProperties = new Dictionary<string, string>();
-			GlobalProperties[PropertyUseReflectionOptimizer] = bool.TrueString;
-			LoadGlobalPropertiesFromAppConfig();
-			VerifyProperties(GlobalProperties);
-
-			BytecodeProviderInstance = BuildBytecodeProvider(GlobalProperties);
-			EnableReflectionOptimizer = PropertiesHelper.GetBoolean(PropertyUseReflectionOptimizer, GlobalProperties);
-
-			if (EnableReflectionOptimizer)
-			{
-				log.Info("Using reflection optimizer");
-			}
+			InitializeGlobalProperties(LoadGlobalPropertiesFromAppConfig());
 		}
 
-		private static void LoadGlobalPropertiesFromAppConfig()
+		private static IHibernateConfiguration LoadGlobalPropertiesFromAppConfig()
 		{
-			object config = ConfigurationManager.GetSection(CfgXmlHelper.CfgSectionName);
+			var assemblyLocation = Assembly.GetEntryAssembly()?.Location;
+			if (assemblyLocation == null) return null;
+			
+			var configuration = ConfigurationManager.OpenExeConfiguration(assemblyLocation);
+			if (configuration == null)
+			{
+				log.Info(string.Format("No configuration found at entry assembly location {0}", assemblyLocation));
+				return null;
+			}
+
+			object config = configuration.GetSection(CfgXmlHelper.CfgSectionName);
 
 			if (config == null)
 			{
 				log.Info(string.Format("{0} section not found in application configuration file", CfgXmlHelper.CfgSectionName));
-				return;
+				return null;
 			}
 
 			var nhConfig = config as IHibernateConfiguration;
@@ -239,17 +241,38 @@ namespace NHibernate.Cfg
 					string.Format(
 						"{0} section handler, in application configuration file, is not IHibernateConfiguration, section ignored",
 						CfgXmlHelper.CfgSectionName));
-				return;
+				return null;
 			}
 
-			GlobalProperties[PropertyBytecodeProvider] = nhConfig.ByteCodeProviderType;
-			GlobalProperties[PropertyUseReflectionOptimizer] = nhConfig.UseReflectionOptimizer.ToString();
-			if (nhConfig.SessionFactory != null)
+			return nhConfig;
+		}
+
+		public static void InitializeGlobalProperties(IHibernateConfiguration nhConfig)
+		{
+			GlobalProperties.Clear();
+			GlobalProperties[PropertyUseReflectionOptimizer] = bool.TrueString;
+
+			if (nhConfig != null)
 			{
-				foreach (var kvp in nhConfig.SessionFactory.Properties)
+				GlobalProperties[PropertyBytecodeProvider] = nhConfig.ByteCodeProviderType;
+				GlobalProperties[PropertyUseReflectionOptimizer] = nhConfig.UseReflectionOptimizer.ToString();
+				if (nhConfig.SessionFactory != null)
 				{
-					GlobalProperties[kvp.Key] = kvp.Value;
+					foreach (var kvp in nhConfig.SessionFactory.Properties)
+					{
+						GlobalProperties[kvp.Key] = kvp.Value;
+					}
 				}
+			}
+
+			VerifyProperties(GlobalProperties);
+
+			BytecodeProviderInstance = BuildBytecodeProvider(GlobalProperties);
+			EnableReflectionOptimizer = PropertiesHelper.GetBoolean(PropertyUseReflectionOptimizer, GlobalProperties);
+
+			if (EnableReflectionOptimizer)
+			{
+				log.Info("Using reflection optimizer");
 			}
 		}
 

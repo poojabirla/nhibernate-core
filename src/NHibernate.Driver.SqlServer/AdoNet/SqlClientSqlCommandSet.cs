@@ -1,3 +1,4 @@
+#if !NETSTANDARD2_0
 using System;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -30,7 +31,7 @@ namespace NHibernate.AdoNet
 
 		static SqlClientSqlCommandSet()
 		{
-			var sysData = Assembly.Load("System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+			var sysData = typeof(System.Data.SqlClient.SqlCommand).Assembly;
 			sqlCmdSetType = sysData.GetType("System.Data.SqlClient.SqlCommandSet");
 			Debug.Assert(sqlCmdSetType != null, "Could not find SqlCommandSet!");
 
@@ -133,3 +134,4 @@ namespace NHibernate.AdoNet
 		}
 	}
 }
+#endif

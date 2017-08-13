@@ -1,15 +1,22 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../../build-common/NHibernate.props" />
 
   <PropertyGroup>
     <Description>The Visual Basic Unit Tests for NHibernate.</Description>
 
-    <TargetFramework>net461</TargetFramework>
+    <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
 
     <NoWarn>$(NoWarn);3001;3002;3003;3005</NoWarn>
     <OptionExplicit>On</OptionExplicit>
     <OptionStrict>On</OptionStrict>
+
+    <DisableImplicitPackageTargetFallback>true</DisableImplicitPackageTargetFallback>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Issues\NH3302\**" />  <!--"Like" not supported when dual-targeting netcoreapp2.0 and net461.  Test ignored anyways.-->
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="**\*.hbm.xml" />
@@ -31,9 +38,9 @@
     <PackageReference Include="Remotion.Linq" Version="2.1.2" />
     <PackageReference Include="Remotion.Linq.EagerFetching" Version="2.1.0" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.0.7.6" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.3.0" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.4.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.8.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.2.0" />
   </ItemGroup>
 

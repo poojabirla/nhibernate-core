@@ -551,7 +551,7 @@ namespace NHibernate.Test.Linq.ByMethod
 		{
 			if (!TestDialect.SupportsComplexExpressionInGroupBy)
 				Assert.Ignore(Dialect.GetType().Name + " does not support complex group by expressions");
-			if (Sfi.ConnectionProvider.Driver is OdbcDriver)
+			if (Sfi.ConnectionProvider.Driver.IsOdbcDriver())
 				Assert.Ignore("SQL Server seems unable to match complex group by and select list arguments when running over ODBC.");
 
 			var orderGroups = db.Orders.GroupBy(o => o.Customer.CustomerId == null ? 0 : 1).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();
@@ -563,7 +563,7 @@ namespace NHibernate.Test.Linq.ByMethod
 		{
 			if (!TestDialect.SupportsComplexExpressionInGroupBy)
 				Assert.Ignore(Dialect.GetType().Name + " does not support complex group by expressions");
-			if (Sfi.ConnectionProvider.Driver is OdbcDriver)
+			if (Sfi.ConnectionProvider.Driver.IsOdbcDriver())
 				Assert.Ignore("SQL Server seems unable to match complex group by and select list arguments when running over ODBC.");
 
 			var orderGroups = db.Orders.GroupBy(o => new { Key = o.Customer.CustomerId == null ? 0 : 1 }).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();
@@ -575,7 +575,7 @@ namespace NHibernate.Test.Linq.ByMethod
 		{
 			if (!TestDialect.SupportsComplexExpressionInGroupBy)
 				Assert.Ignore(Dialect.GetType().Name + " does not support complex group by expressions");
-			if (Sfi.ConnectionProvider.Driver is OdbcDriver)
+			if (Sfi.ConnectionProvider.Driver.IsOdbcDriver())
 				Assert.Ignore("SQL Server seems unable to match complex group by and select list arguments when running over ODBC.");
 
 			var orderGroups = db.Orders.GroupBy(o => new[] { o.Customer.CustomerId == null ? 0 : 1, }).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();
@@ -704,7 +704,7 @@ namespace NHibernate.Test.Linq.ByMethod
 		{
 			if (!TestDialect.SupportsComplexExpressionInGroupBy)
 				Assert.Ignore(Dialect.GetType().Name + " does not support complex group by expressions");
-			if (Sfi.ConnectionProvider.Driver is OdbcDriver)
+			if (Sfi.ConnectionProvider.Driver.IsOdbcDriver())
 				Assert.Ignore("SQL Server seems unable to match complex group by and select list arguments when running over ODBC.");
 
 			var orderGroups = db.OrderLines.GroupBy(o => o.Order.Customer == null ? 0 : 1).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();
@@ -716,7 +716,7 @@ namespace NHibernate.Test.Linq.ByMethod
 		{
 			if (!TestDialect.SupportsComplexExpressionInGroupBy)
 				Assert.Ignore(Dialect.GetType().Name + " does not support complex group by expressions");
-			if (Sfi.ConnectionProvider.Driver is OdbcDriver)
+			if (Sfi.ConnectionProvider.Driver.IsOdbcDriver())
 				Assert.Ignore("SQL Server seems unable to match complex group by and select list arguments when running over ODBC.");
 
 			var orderGroups = db.OrderLines.GroupBy(o => o.Order.Customer.CustomerId == null ? 0 : 1).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();
@@ -728,7 +728,7 @@ namespace NHibernate.Test.Linq.ByMethod
 		{
 			if (!TestDialect.SupportsComplexExpressionInGroupBy)
 				Assert.Ignore(Dialect.GetType().Name + " does not support complex group by expressions");
-			if (Sfi.ConnectionProvider.Driver is OdbcDriver)
+			if (Sfi.ConnectionProvider.Driver.IsOdbcDriver())
 				Assert.Ignore("SQL Server seems unable to match complex group by and select list arguments when running over ODBC.");
 
 			var orderGroups = db.OrderLines.GroupBy(o => new { Key = o.Order.Customer == null ? 0 : 1 }).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();
@@ -740,7 +740,7 @@ namespace NHibernate.Test.Linq.ByMethod
 		{
 			if (!TestDialect.SupportsComplexExpressionInGroupBy)
 				Assert.Ignore(Dialect.GetType().Name + " does not support complex group by expressions");
-			if (Sfi.ConnectionProvider.Driver is OdbcDriver)
+			if (Sfi.ConnectionProvider.Driver.IsOdbcDriver())
 				Assert.Ignore("SQL Server seems unable to match complex group by and select list arguments when running over ODBC.");
 
 			var orderGroups = db.OrderLines.GroupBy(o => new { Key = o.Order.Customer.CustomerId == null ? 0 : 1 }).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();
@@ -752,7 +752,7 @@ namespace NHibernate.Test.Linq.ByMethod
 		{
 			if (!TestDialect.SupportsComplexExpressionInGroupBy)
 				Assert.Ignore(Dialect.GetType().Name + " does not support complex group by expressions");
-			if (Sfi.ConnectionProvider.Driver is OdbcDriver)
+			if (Sfi.ConnectionProvider.Driver.IsOdbcDriver())
 				Assert.Ignore("SQL Server seems unable to match complex group by and select list arguments when running over ODBC.");
 
 			var orderGroups = db.OrderLines.GroupBy(o => new[] { o.Order.Customer == null ? 0 : 1 }).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();
@@ -764,7 +764,7 @@ namespace NHibernate.Test.Linq.ByMethod
 		{
 			if (!TestDialect.SupportsComplexExpressionInGroupBy)
 				Assert.Ignore(Dialect.GetType().Name + " does not support complex group by expressions");
-			if (Sfi.ConnectionProvider.Driver is OdbcDriver)
+			if (Sfi.ConnectionProvider.Driver.IsOdbcDriver())
 				Assert.Ignore("SQL Server seems unable to match complex group by and select list arguments when running over ODBC.");
 
 			var orderGroups = db.OrderLines.GroupBy(o => new[] { o.Order.Customer.CustomerId == null ? 0 : 1 }).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();
@@ -776,7 +776,7 @@ namespace NHibernate.Test.Linq.ByMethod
 		{
 			if (!TestDialect.SupportsComplexExpressionInGroupBy)
 				Assert.Ignore(Dialect.GetType().Name + " does not support complex group by expressions");
-			if (Sfi.ConnectionProvider.Driver is OdbcDriver)
+			if (Sfi.ConnectionProvider.Driver.IsOdbcDriver())
 				Assert.Ignore("SQL Server seems unable to match complex group by and select list arguments when running over ODBC.");
 			if (Dialect is Oracle8iDialect)
 				Assert.Ignore("ORA-12704: character set mismatch. Due to NHibernate creating Unicode string types as NVarchar2 but querying them as Varchar2.");
@@ -790,7 +790,7 @@ namespace NHibernate.Test.Linq.ByMethod
 		{
 			if (!TestDialect.SupportsComplexExpressionInGroupBy)
 				Assert.Ignore(Dialect.GetType().Name + " does not support complex group by expressions");
-			if (Sfi.ConnectionProvider.Driver is OdbcDriver)
+			if (Sfi.ConnectionProvider.Driver.IsOdbcDriver())
 				Assert.Ignore("SQL Server seems unable to match complex group by and select list arguments when running over ODBC.");
 
 			var orderGroups = db.OrderLines.Select(o => new object[] { o }).GroupBy(x => new object[] { ((OrderLine)x[0]).Order.Customer == null ? 0 : 1 }).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();
@@ -802,7 +802,7 @@ namespace NHibernate.Test.Linq.ByMethod
 		{
 			if (!TestDialect.SupportsComplexExpressionInGroupBy)
 				Assert.Ignore(Dialect.GetType().Name + " does not support complex group by expressions");
-			if (Sfi.ConnectionProvider.Driver is OdbcDriver)
+			if (Sfi.ConnectionProvider.Driver.IsOdbcDriver())
 				Assert.Ignore("SQL Server seems unable to match complex group by and select list arguments when running over ODBC.");
 
 			var orderGroups = db.OrderLines.Select(o => new { OrderLine = (object)o }).GroupBy(x => new object[] { ((OrderLine)x.OrderLine).Order.Customer == null ? 0 : 1 }).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();

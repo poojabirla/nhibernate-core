@@ -32,7 +32,7 @@ namespace NHibernate.Test.ExceptionsTest
 		protected override bool AppliesTo(ISessionFactoryImplementor factory)
 		{
 			var driver = factory.ConnectionProvider.Driver;
-			return !(driver is OracleDataClientDriver) && !(driver is OracleManagedDataAccessDriver) && !(driver is OracleLiteDataClientDriver) && !(driver is OdbcDriver) && !(driver is OleDbDriver);
+			return !(driver.IsOracleDataClientDriver()) && !(driver.IsOracleManagedDataAccessDriver()) && !(driver.IsOracleLiteDataClientDriver()) && !(driver.IsOdbcDriver()) && !(driver.IsOleDbDriver());
 		}
 
 		protected override void Configure(Cfg.Configuration configuration)
@@ -44,12 +44,14 @@ namespace NHibernate.Test.ExceptionsTest
 					typeof(MSSQLExceptionConverterExample).AssemblyQualifiedName);
 			}
 
+#if !NETCOREAPP2_0
 			if (Dialect is Oracle8iDialect)
 			{
 				configuration.SetProperty(
 					Cfg.Environment.SqlExceptionConverter,
 					typeof(OracleClientExceptionConverterExample).AssemblyQualifiedName);
 			}
+#endif
 
 			if (Dialect is PostgreSQLDialect)
 			{

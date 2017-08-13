@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="../../build-common/NHibernate.props" />
 
   <PropertyGroup>
@@ -8,15 +8,19 @@
     <TargetFramework>net461</TargetFramework>
     <NoWarn>$(NoWarn);3001;3002;3003;3005;1591</NoWarn>
     <SignAssembly>True</SignAssembly>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <AssemblyOriginatorKeyFile>..\NHibernate.snk</AssemblyOriginatorKeyFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <DisableImplicitPackageTargetFallback>true</DisableImplicitPackageTargetFallback>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="..\NHibernate.snk" Link="NHibernate.snk" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.105.1">
       <IncludeAssets>All</IncludeAssets>
       <ExcludeAssets>none</ExcludeAssets>
@@ -26,6 +30,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NHibernate\NHibernate.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="../../LICENSE.txt">
+      <PackagePath>NHibernate.license.txt</PackagePath>
+    </Content>
   </ItemGroup>
 
 </Project>
