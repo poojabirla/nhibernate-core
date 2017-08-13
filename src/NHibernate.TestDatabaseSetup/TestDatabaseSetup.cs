@@ -119,17 +119,21 @@ namespace NHibernate.TestDatabaseSetup
 		private static void SetupSqlServerCe(Cfg.Configuration cfg)
 		{
 #if !NETCOREAPP2_0
+			var connStr = cfg.Properties[Cfg.Environment.ConnectionString];
+
 			try
 			{
-				if (File.Exists("NHibernate.sdf"))
-					File.Delete("NHibernate.sdf");
+				var connStrBuilder = new System.Data.SqlServerCe.SqlCeConnectionStringBuilder(connStr);
+				var dataSource = connStrBuilder.DataSource;
+				if (File.Exists(dataSource))
+					File.Delete(dataSource);
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine(e);
 			}
 
-			using (var en = new System.Data.SqlServerCe.SqlCeEngine("DataSource=\"NHibernate.sdf\""))
+			using (var en = new System.Data.SqlServerCe.SqlCeEngine(connStr))
 			{
 				en.CreateDatabase();
 			}
