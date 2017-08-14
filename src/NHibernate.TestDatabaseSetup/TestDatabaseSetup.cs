@@ -19,6 +19,7 @@ namespace NHibernate.TestDatabaseSetup
 				{"NHibernate.Driver.OdbcDriver, NHibernate.Driver.Odbc", SetupSqlServerOdbc},
 				{"NHibernate.Driver.FirebirdClientDriver, NHibernate.Driver.FirebirdClient", SetupFirebird},
 				{"NHibernate.Driver.SQLiteDriver, NHibernate.Driver.SQLite", SetupSQLite},
+				{"NHibernate.Driver.SQLiteMicrosoftDriver, NHibernate.Driver.SQLite.Microsoft", SetupSQLite},
 				{"NHibernate.Driver.NpgsqlDriver, NHibernate.Driver.Npgsql", SetupNpgsql},
 				{"NHibernate.Driver.OracleDataClientDriver, NHibernate.Driver.AdoNet", SetupOracle},
 				{"NHibernate.Driver.MySqlDataDriver, NHibernate.Driver.MySql", SetupMySql},
