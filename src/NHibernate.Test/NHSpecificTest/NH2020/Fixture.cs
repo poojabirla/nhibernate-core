@@ -26,7 +26,7 @@ namespace NHibernate.Test.NHSpecificTest.NH2020
 		protected override bool AppliesTo(ISessionFactoryImplementor factory)
 		{
 			// Use a SQL Server Client exception converter, cannot work for ODBC or OleDb
-			return factory.ConnectionProvider.Driver is SqlClientDriver;
+			return factory.ConnectionProvider.Driver is SqlServerDriver;
 		}
 
 		protected override void OnTearDown()

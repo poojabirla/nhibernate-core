@@ -25,7 +25,7 @@ namespace NHibernate.Example.Web.Infrastructure
 				.Integrate
 					.Using<MsSql2008Dialect>()
 					.Connected
-						.BySqlClientDriver()
+						.BySqlServerDriver()
 						.Using(@"Server=(local)\SQLEXPRESS;initial catalog=nhibernate;Integrated Security=true");
 
 			cfg.AddMapping(domainMapping);
