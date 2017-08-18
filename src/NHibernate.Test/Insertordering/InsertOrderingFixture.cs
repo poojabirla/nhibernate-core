@@ -40,7 +40,7 @@ namespace NHibernate.Test.Insertordering
 		protected override bool AppliesTo(ISessionFactoryImplementor factory)
 		{
 			// Custom batcher does not support oledb driver.
-			return factory.ConnectionProvider.Driver is SqlClientDriver;
+			return factory.ConnectionProvider.Driver is SqlServerDriver;
 		}
 
 		protected override void Configure(Configuration configuration)

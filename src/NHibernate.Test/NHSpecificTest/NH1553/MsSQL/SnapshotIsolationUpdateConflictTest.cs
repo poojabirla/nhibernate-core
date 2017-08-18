@@ -131,7 +131,7 @@ namespace NHibernate.Test.NHSpecificTest.NH1553.MsSQL
 		{
 			// SQLUpdateConflictToStaleStateExceptionConverter is specific to Sql client driver, and does not work
 			// with Odbc (and likeley Oledb).
-			return factory.ConnectionProvider.Driver is SqlClientDriver;
+			return factory.ConnectionProvider.Driver is SqlServerDriver;
 		}
 
 		private void SetAllowSnapshotIsolation(bool on)

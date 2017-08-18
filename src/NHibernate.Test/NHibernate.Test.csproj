@@ -65,7 +65,7 @@
     <ProjectReference Include="..\NHibernate.Driver.Odbc\NHibernate.Driver.Odbc.csproj" />
     <ProjectReference Include="..\NHibernate.Driver.OleDb\NHibernate.Driver.OleDb.csproj" />
     <ProjectReference Include="..\NHibernate.Driver.Oracle.ManagedDataAccess\NHibernate.Driver.Oracle.ManagedDataAccess.csproj" />
-    <ProjectReference Include="..\NHibernate.Driver.SqlClient\NHibernate.Driver.SqlClient.csproj" />
+    <ProjectReference Include="..\NHibernate.Driver.SqlServer\NHibernate.Driver.SqlServer.csproj" />
     <ProjectReference Include="..\NHibernate.Driver.SQLite\NHibernate.Driver.SQLite.csproj" />
     <ProjectReference Include="..\NHibernate.Driver.SqlServer.Compact\NHibernate.Driver.SqlServer.Compact.csproj" />
     <ProjectReference Include="..\NHibernate\NHibernate.csproj" />

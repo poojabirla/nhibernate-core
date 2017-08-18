@@ -91,7 +91,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHibernate.Driver.Oracle.Ma
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHibernate.Driver.SQLite", "NHibernate.Driver.SQLite\NHibernate.Driver.SQLite.csproj", "{99FE5A5C-F732-40A3-BEE6-ED5ADC393862}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHibernate.Driver.SqlClient", "NHibernate.Driver.SqlClient\NHibernate.Driver.SqlClient.csproj", "{CF9FEEC5-3403-4F3F-9E4F-F0BAFE95DE39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHibernate.Driver.SqlServer", "NHibernate.Driver.SqlServer\NHibernate.Driver.SqlServer.csproj", "{CF9FEEC5-3403-4F3F-9E4F-F0BAFE95DE39}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NHibernate.Driver.SqlServer.Compact", "NHibernate.Driver.SqlServer.Compact\NHibernate.Driver.SqlServer.Compact.csproj", "{11B3C504-D501-4766-AC36-0CF1A813815B}"
 EndProject
