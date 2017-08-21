@@ -1,5 +1,6 @@
 using System.Text;
 using NHibernate.Cfg;
+using NHibernate.Dialect;
 using NHibernate.Tool.hbm2ddl;
 
 using NUnit.Framework;
@@ -13,6 +14,14 @@ namespace NHibernate.Test.NHSpecificTest.NH1593
 		public void SchemaUpdateAddsIndexesThatWerentPresentYet()
 		{
 			Configuration cfg = TestConfigurationHelper.GetDefaultConfiguration();
+
+#if NETCOREAPP2_0
+			if (Dialect.Dialect.GetDialect(cfg.Properties) is FirebirdDialect)
+			{
+				Assert.Ignore("Firebird driver doesn't implement GetSchema");
+			}
+#endif
+
 			cfg.AddResource("NHibernate.Test.NHSpecificTest.NH1593.TestIndex.hbm.xml", GetType().Assembly);
 			var su = new SchemaUpdate(cfg);
 			var sb = new StringBuilder(500);

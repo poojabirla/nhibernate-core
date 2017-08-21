@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using NHibernate.Cfg;
 using NHibernate.Criterion;
+using NHibernate.Dialect;
 using NHibernate.Engine;
 using NHibernate.Tool.hbm2ddl;
 using NUnit.Framework;
@@ -27,13 +28,13 @@ namespace NHibernate.Test.NHSpecificTest.NH1274ExportExclude
 
 			if (dialect.SupportsIfExistsBeforeTableName)
 			{
-				Assert.IsTrue(s.Contains("drop table if exists Home_Drop"));
-				Assert.IsTrue(s.Contains("drop table if exists Home_All"));
+				Assert.That(s, Does.Contain("drop table if exists Home_Drop"));
+				Assert.That(s, Does.Contain("drop table if exists Home_All"));
 			}
 			else
 			{
-				Assert.IsTrue(s.Contains("drop table Home_Drop"));
-				Assert.IsTrue(s.Contains("drop table Home_All"));
+				Assert.That(s, Does.Contain("drop table Home_Drop"));
+				Assert.That(s, Does.Contain("drop table Home_All"));
 			}
 		}
 
@@ -49,36 +50,52 @@ namespace NHibernate.Test.NHSpecificTest.NH1274ExportExclude
 			var dialect = Dialect.Dialect.GetDialect(configuration.Properties);
 			if (dialect.SupportsIfExistsBeforeTableName)
 			{
-				Assert.IsTrue(s.Contains("drop table if exists Home_Drop"));
-				Assert.IsTrue(s.Contains("drop table if exists Home_All"));
+				Assert.That(s, Does.Contain("drop table if exists Home_Drop"));
+				Assert.That(s, Does.Contain("drop table if exists Home_All"));
 			}
 			else
 			{
-				Assert.IsTrue(s.Contains("drop table Home_Drop"));
-				Assert.IsTrue(s.Contains("drop table Home_All"));
+				Assert.That(s, Does.Contain("drop table Home_Drop"));
+				Assert.That(s, Does.Contain("drop table Home_All"));
 			}
 
-			Assert.IsTrue(s.Contains("create table Home_All"));
-			Assert.IsTrue(s.Contains("create table Home_Export"));
+			Assert.That(s, Does.Contain("create table Home_All"));
+			Assert.That(s, Does.Contain("create table Home_Export"));
 		}
 
 		[Test]
 		public void SchemaExport_Update_CreatesUpdateScript()
 		{
 			Configuration configuration = GetConfiguration();
+
+#if NETCOREAPP2_0
+			if (Dialect.Dialect.GetDialect(configuration.Properties) is FirebirdDialect)
+			{
+				Assert.Ignore("Firebird driver doesn't implement GetSchema");
+			}
+#endif
+
 			SchemaUpdate update = new SchemaUpdate(configuration);
 			TextWriter tw = new StringWriter();
 			update.Execute(tw.WriteLine, false);
 
 			string s = tw.ToString();
-			Assert.IsTrue(s.Contains("create table Home_Update"));
-			Assert.IsTrue(s.Contains("create table Home_All"));
+			Assert.That(s, Does.Contain("create table Home_Update"));
+			Assert.That(s, Does.Contain("create table Home_All"));
 		}
 
 		[Test]
 		public void SchemaExport_Validate_CausesValidateException()
 		{
 			Configuration configuration = GetConfiguration();
+
+#if NETCOREAPP2_0
+			if (Dialect.Dialect.GetDialect(configuration.Properties) is FirebirdDialect)
+			{
+				Assert.Ignore("Firebird driver doesn't implement GetSchema");
+			}
+#endif
+
 			SchemaValidator validator = new SchemaValidator(configuration);
 			try
 			{

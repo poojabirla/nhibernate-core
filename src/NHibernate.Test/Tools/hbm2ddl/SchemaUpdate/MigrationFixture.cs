@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using NHibernate.Cfg;
+using NHibernate.Dialect;
 using NHibernate.Driver;
 using NHibernate.Tool.hbm2ddl;
 using NHibernate.Util;
@@ -21,6 +22,13 @@ namespace NHibernate.Test.Tools.hbm2ddl.SchemaUpdate
 			// It seems it would require its own DataBaseSchema, but this is bound to the dialect, not the driver.
 			if (driverClass.IsOdbcDriver())
 				Assert.Ignore("Test is not compatible with ODBC");
+
+#if NETCOREAPP2_0
+			if (Dialect.Dialect.GetDialect(v1cfg.Properties) is FirebirdDialect)
+			{
+				Assert.Ignore("Firebird driver doesn't implement GetSchema");
+			}
+#endif
 
 			using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource1))
 				v1cfg.AddInputStream(stream);

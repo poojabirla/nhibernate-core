@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using NHibernate.Cfg;
+using NHibernate.Dialect;
 using NHibernate.Tool.hbm2ddl;
 using NUnit.Framework;
 
@@ -13,6 +14,13 @@ namespace NHibernate.Test.Tools.hbm2ddl.SchemaValidator
 		{
 			const string resource = "NHibernate.Test.Tools.hbm2ddl.SchemaValidator.1_Version.hbm.xml";
 			var cfg = BuildConfiguration(resource);
+
+#if NETCOREAPP2_0
+			if (Dialect.Dialect.GetDialect(cfg.Properties) is FirebirdDialect)
+			{
+				Assert.Ignore("Firebird driver doesn't implement GetSchema");
+			}
+#endif
 
 			new SchemaExport(cfg).Execute(true, true, false);
 
@@ -54,6 +62,13 @@ namespace NHibernate.Test.Tools.hbm2ddl.SchemaValidator
 
 			const string resource2 = "NHibernate.Test.Tools.hbm2ddl.SchemaValidator.2_Version.hbm.xml";
 			var cfgV2 = BuildConfiguration(resource2);
+
+#if NETCOREAPP2_0
+			if (Dialect.Dialect.GetDialect(cfgV2.Properties) is FirebirdDialect)
+			{
+				Assert.Ignore("Firebird driver doesn't implement GetSchema");
+			}
+#endif
 
 			new SchemaExport(cfgV1).Execute(true, true, false);
 
