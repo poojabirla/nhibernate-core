@@ -16,8 +16,8 @@ namespace NHibernate.Type
 	[Serializable]
 	public partial class ArrayType : CollectionType
 	{
-		private readonly System.Type elementClass;
-		private readonly System.Type arrayClass;
+		private readonly SerializableSystemType _elementClass;
+		private readonly SerializableSystemType _arrayClass;
 
 		/// <summary>
 		/// Initializes a new instance of a <see cref="ArrayType"/> class for
@@ -34,17 +34,14 @@ namespace NHibernate.Type
 		public ArrayType(string role, string propertyRef, System.Type elementClass)
 			: base(role, propertyRef)
 		{
-			this.elementClass = elementClass;
-			arrayClass = Array.CreateInstance(elementClass, 0).GetType();
+			this._elementClass = elementClass;
+			_arrayClass = Array.CreateInstance(elementClass, 0).GetType();
 		}
 
 		/// <summary>
 		/// The <see cref="System.Array"/> for the element.
 		/// </summary>
-		public override System.Type ReturnedClass
-		{
-			get { return arrayClass; }
-		}
+		public override System.Type ReturnedClass => _arrayClass?.GetType();
 
 		public override IPersistentCollection Instantiate(ISessionImplementor session, ICollectionPersister persister, object key)
 		{
@@ -82,17 +79,14 @@ namespace NHibernate.Type
 		}
 
 		/// <summary></summary>
-		public override bool IsArrayType
-		{
-			get { return true; }
-		}
+		public override bool IsArrayType => true;
 
 		// Not ported - ToString( object value, ISessionFactoryImplementor factory )
 		// - PesistentCollectionType implementation is able to handle arrays too in .NET
 
 		public override object InstantiateResult(object original)
 		{
-			return Array.CreateInstance(elementClass, ((Array) original).Length);
+			return Array.CreateInstance(_elementClass.GetType(), ((Array) original).Length);
 		}
 
 		public override object Instantiate(int anticipatedSize)

@@ -17,7 +17,7 @@ namespace NHibernate.Impl
 	[Serializable]
 	public partial class CriteriaImpl : ICriteria
 	{
-		private readonly System.Type persistentClass;
+		private readonly SerializableSystemType persistentClass;
 		private readonly List<CriterionEntry> criteria = new List<CriterionEntry>();
 		private readonly List<OrderEntry> orderEntries = new List<OrderEntry>(10);
 		private readonly Dictionary<string, FetchMode> fetchModes = new Dictionary<string, FetchMode>();
@@ -521,7 +521,7 @@ namespace NHibernate.Impl
 			CriteriaImpl clone;
 			if (persistentClass != null)
 			{
-				clone = new CriteriaImpl(persistentClass, Alias, Session);
+				clone = new CriteriaImpl((System.Type)persistentClass, Alias, Session);
 			}
 			else
 			{
@@ -994,7 +994,7 @@ namespace NHibernate.Impl
 		public System.Type GetRootEntityTypeIfAvailable()
 		{
 			if (persistentClass != null)
-				return persistentClass;
+				return (System.Type)persistentClass;
 			throw new HibernateException("Cannot provide root entity type because this criteria was initialized with an entity name.");
 		}
 	}

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using NHibernate.Engine;
 using NHibernate.Proxy;
+using NHibernate.Util;
 
 namespace NHibernate.Intercept
 {
@@ -16,7 +17,7 @@ namespace NHibernate.Intercept
 		private readonly ISet<string> unwrapProxyFieldNames;
 		private readonly HashSet<string> loadedUnwrapProxyFieldNames = new HashSet<string>();
 		private readonly string entityName;
-		private readonly System.Type mappedClass;
+		private readonly SerializableSystemType mappedClass;
 
 		[NonSerialized]
 		private bool initializing;
@@ -71,7 +72,7 @@ namespace NHibernate.Intercept
 
 		public System.Type MappedClass
 		{
-			get { return mappedClass; }
+			get { return (System.Type)mappedClass; }
 		}
 
 		#endregion

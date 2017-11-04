@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Reflection;
 using NHibernate.Engine;
+using NHibernate.Util;
 
 namespace NHibernate.Properties
 {
@@ -20,21 +21,18 @@ namespace NHibernate.Properties
 			return new EmbeddedSetter(theClass);
 		}
 
-		public bool CanAccessThroughReflectionOptimizer
-		{
-			get { return false; }
-		}
+		public bool CanAccessThroughReflectionOptimizer => false;
 
 		#endregion
 
 		[Serializable]
 		public sealed class EmbeddedGetter : IGetter
 		{
-			private readonly System.Type clazz;
+			private readonly SerializableSystemType _clazz;
 
 			internal EmbeddedGetter(System.Type clazz)
 			{
-				this.clazz = clazz;
+				this._clazz = clazz ?? throw new ArgumentNullException(nameof(clazz));
 			}
 
 			#region IGetter Members
@@ -44,20 +42,11 @@ namespace NHibernate.Properties
 				return target;
 			}
 
-			public System.Type ReturnType
-			{
-				get { return clazz; }
-			}
+			public System.Type ReturnType => _clazz?.GetType();
 
-			public string PropertyName
-			{
-				get { return null; }
-			}
+			public string PropertyName => null;
 
-			public MethodInfo Method
-			{
-				get { return null; }
-			}
+			public MethodInfo Method => null;
 
 			public object GetForInsert(object owner, IDictionary mergeMap, ISessionImplementor session)
 			{
@@ -68,18 +57,18 @@ namespace NHibernate.Properties
 
 			public override string ToString()
 			{
-				return string.Format("EmbeddedGetter({0})", clazz.FullName);
+				return string.Format("EmbeddedGetter({0})", _clazz.FullName);
 			}
 		}
 
 		[Serializable]
 		public sealed class EmbeddedSetter : ISetter
 		{
-			private readonly System.Type clazz;
+			private readonly System.Type _clazz;
 
 			internal EmbeddedSetter(System.Type clazz)
 			{
-				this.clazz = clazz;
+				this._clazz = clazz ?? throw new ArgumentNullException(nameof(clazz));
 			}
 
 			#region ISetter Members
@@ -88,21 +77,15 @@ namespace NHibernate.Properties
 			{
 			}
 
-			public string PropertyName
-			{
-				get { return null; }
-			}
+			public string PropertyName => null;
 
-			public MethodInfo Method
-			{
-				get { return null; }
-			}
+			public MethodInfo Method => null;
 
 			#endregion
 
 			public override string ToString()
 			{
-				return string.Format("EmbeddedSetter({0})", clazz.FullName);
+				return string.Format("EmbeddedSetter({0})", _clazz.FullName);
 			}
 		}
 

@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Security;
-using System.Security.Permissions;
+using NHibernate.Util;
 
 namespace NHibernate
 {
@@ -11,9 +11,9 @@ namespace NHibernate
 	[Serializable]
 	public class PropertyAccessException : HibernateException, ISerializable
 	{
-		private readonly System.Type persistentType;
-		private readonly string propertyName;
-		private readonly bool wasSetter;
+		private readonly SerializableSystemType _persistentType;
+		private readonly string _propertyName;
+		private readonly bool _wasSetter;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PropertyAccessException"/> class.
@@ -31,25 +31,22 @@ namespace NHibernate
 									   string propertyName)
 			: base(message, innerException)
 		{
-			this.persistentType = persistentType;
-			this.wasSetter = wasSetter;
-			this.propertyName = propertyName;
+			_persistentType = persistentType;
+			_wasSetter = wasSetter;
+			_propertyName = propertyName;
 		}
 
 		public PropertyAccessException(Exception innerException, string message, bool wasSetter, System.Type persistentType)
 			: base(message, innerException)
 		{
-			this.persistentType = persistentType;
-			this.wasSetter = wasSetter;
+			_persistentType = persistentType;
+			_wasSetter = wasSetter;
 		}
 
 		/// <summary>
 		/// Gets the <see cref="System.Type"/> that NHibernate was trying find the Property or Field in.
 		/// </summary>
-		public System.Type PersistentType
-		{
-			get { return persistentType; }
-		}
+		public System.Type PersistentType => _persistentType?.TryGetType();
 
 		/// <summary>
 		/// Gets a message that describes the current <see cref="PropertyAccessException"/>.
@@ -62,9 +59,9 @@ namespace NHibernate
 		{
 			get
 			{
-				return base.Message + (wasSetter ? " setter of " : " getter of ") +
-					   (persistentType == null ? "UnknownType" : persistentType.FullName) +
-					   (string.IsNullOrEmpty(propertyName) ? string.Empty: "." + propertyName);
+				return base.Message + (_wasSetter ? " setter of " : " getter of ") +
+					   (_persistentType == null ? "UnknownType" : _persistentType.FullName) +
+					   (string.IsNullOrEmpty(_propertyName) ? string.Empty: "." + _propertyName);
 			}
 		}
 
@@ -83,9 +80,22 @@ namespace NHibernate
 		/// </param>
 		protected PropertyAccessException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
-			persistentType = info.GetValue("persistentType", typeof(System.Type)) as System.Type;
-			propertyName = info.GetString("propertyName");
-			wasSetter = info.GetBoolean("wasSetter");
+			_propertyName = info.GetString("propertyName");
+			_wasSetter = info.GetBoolean("wasSetter");
+
+			foreach (SerializationEntry entry in info)
+			{
+				switch (entry.Name)
+				{
+					// TODO 6.0: remove "persistentType" deserialization
+					case "persistentType":
+						_persistentType = (System.Type) entry.Value;
+						break;
+					case "_persistentType":
+						_persistentType = (SerializableSystemType) entry.Value;
+						break;
+				}
+			}
 		}
 
 		/// <summary>
@@ -103,9 +113,9 @@ namespace NHibernate
 		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			base.GetObjectData(info, context);
-			info.AddValue("persistentType", persistentType, typeof(System.Type));
-			info.AddValue("propertyName", propertyName);
-			info.AddValue("wasSetter", wasSetter);
+			info.AddValue("_persistentType", _persistentType);
+			info.AddValue("propertyName", _propertyName);
+			info.AddValue("wasSetter", _wasSetter);
 		}
 
 		#endregion

@@ -176,7 +176,7 @@ namespace NHibernate.Engine.Query
 			private readonly bool shallow;
 			private readonly HashSet<string> filterNames;
 			private readonly int hashCode;
-			private readonly System.Type queryTypeDiscriminator;
+			private readonly SerializableSystemType queryTypeDiscriminator;
 
 			public HQLQueryPlanKey(string query, bool shallow, IDictionary<string, IFilter> enabledFilters)
 				: this(typeof(object), query, shallow, enabledFilters)

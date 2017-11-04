@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NHibernate.Engine;
 using NHibernate.SqlCommand;
 using NHibernate.Type;
@@ -42,7 +43,7 @@ namespace NHibernate.Mapping
 		private bool orphanDelete;
 		private int batchSize = -1;
 		private FetchMode fetchMode;
-		private System.Type collectionPersisterClass;
+		private SerializableSystemType collectionPersisterClass;
 		private string referencedPropertyName;
 		private string typeName;
 
@@ -65,7 +66,7 @@ namespace NHibernate.Mapping
 		private ExecuteUpdateResultCheckStyle deleteAllCheckStyle;
 
 		private bool isGeneric;
-		private System.Type[] genericArguments;
+		private SerializableSystemType[] genericArguments;
 		private readonly Dictionary<string, string> filters = new Dictionary<string, string>();
 		private readonly Dictionary<string, string> manyToManyFilters = new Dictionary<string, string>();
 		private bool subselectLoadable;
@@ -138,7 +139,7 @@ namespace NHibernate.Mapping
 
 		public System.Type CollectionPersisterClass
 		{
-			get { return collectionPersisterClass; }
+			get { return (System.Type) collectionPersisterClass; }
 			set { collectionPersisterClass = value; }
 		}
 
@@ -323,8 +324,8 @@ namespace NHibernate.Mapping
 		/// </summary>
 		public System.Type[] GenericArguments
 		{
-			get { return genericArguments; }
-			set { genericArguments = value; }
+			get => genericArguments.Select(sst => (System.Type)sst).ToArray();
+			set => genericArguments = value?.Select(t => (SerializableSystemType)t).ToArray();
 		}
 
 		protected void CheckGenericArgumentsLength(int expectedLength)

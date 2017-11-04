@@ -2,6 +2,7 @@ using System;
 using NHibernate.Bytecode;
 using NHibernate.Intercept;
 using NHibernate.Properties;
+using NHibernate.Util;
 
 namespace NHibernate.Tuple.Component
 {
@@ -13,23 +14,23 @@ namespace NHibernate.Tuple.Component
 	[Serializable]
 	public class PocoComponentTuplizer : AbstractComponentTuplizer
 	{
-		private readonly System.Type componentClass;
-		private readonly ISetter parentSetter;
-		private readonly IGetter parentGetter;
-		[NonSerialized]
-		private IReflectionOptimizer optimizer;
+		private readonly SerializableSystemType _componentClass;
+		private readonly ISetter _parentSetter;
+		private readonly IGetter _parentGetter;
 
+		[NonSerialized]
+		private IReflectionOptimizer _optimizer;
 
 		[OnDeserialized]
 		internal void OnDeserialized(StreamingContext context)
 		{
 			SetReflectionOptimizer();
 
-			if (optimizer != null)
+			if (_optimizer != null)
 			{
 				// Fix for NH-3119:
 				// Also set the InstantiationOptimizer on the deserialized PocoInstantiator.
-				((PocoInstantiator)instantiator).SetOptimizer(optimizer.InstantiationOptimizer);
+				((PocoInstantiator)instantiator).SetOptimizer(_optimizer.InstantiationOptimizer);
 			}
 
 			ClearOptimizerWhenUsingCustomAccessors();
@@ -38,18 +39,18 @@ namespace NHibernate.Tuple.Component
 		public PocoComponentTuplizer(Mapping.Component component)
 			: base(component)
 		{
-			componentClass = component.ComponentClass;
+			_componentClass = component.ComponentClass;
 
 			var parentProperty = component.ParentProperty;
 			if (parentProperty == null)
 			{
-				parentSetter = null;
-				parentGetter = null;
+				_parentSetter = null;
+				_parentGetter = null;
 			}
 			else
 			{
-				parentSetter = parentProperty.GetSetter(componentClass);
-				parentGetter = parentProperty.GetGetter(componentClass);
+				_parentSetter = parentProperty.GetSetter(_componentClass.GetType());
+				_parentGetter = parentProperty.GetGetter(_componentClass.GetType());
 			}
 
 			SetReflectionOptimizer();
@@ -60,10 +61,7 @@ namespace NHibernate.Tuple.Component
 			ClearOptimizerWhenUsingCustomAccessors();
 		}
 
-		public override System.Type MappedClass
-		{
-			get { return componentClass; }
-		}
+		public override System.Type MappedClass => _componentClass?.GetType();
 
 		public override object[] GetPropertyValues(object component)
 		{
@@ -73,9 +71,9 @@ namespace NHibernate.Tuple.Component
 				return new object[propertySpan];
 			}
 
-			if (optimizer != null && optimizer.AccessOptimizer != null)
+			if (_optimizer != null && _optimizer.AccessOptimizer != null)
 			{
-				return optimizer.AccessOptimizer.GetPropertyValues(component);
+				return _optimizer.AccessOptimizer.GetPropertyValues(component);
 			}
 			else
 			{
@@ -85,9 +83,9 @@ namespace NHibernate.Tuple.Component
 
 		public override void SetPropertyValues(object component, object[] values)
 		{
-			if (optimizer != null && optimizer.AccessOptimizer != null)
+			if (_optimizer != null && _optimizer.AccessOptimizer != null)
 			{
-				optimizer.AccessOptimizer.SetPropertyValues(component, values);
+				_optimizer.AccessOptimizer.SetPropertyValues(component, values);
 			}
 			else
 			{
@@ -97,17 +95,17 @@ namespace NHibernate.Tuple.Component
 
 		public override object GetParent(object component)
 		{
-			return parentGetter.Get(component);
+			return _parentGetter.Get(component);
 		}
 
 		public override void SetParent(object component, object parent, Engine.ISessionFactoryImplementor factory)
 		{
-			parentSetter.Set(component, parent);
+			_parentSetter.Set(component, parent);
 		}
 
 		public override bool HasParentProperty
 		{
-			get { return parentGetter != null; }
+			get { return _parentGetter != null; }
 		}
 
 		protected internal override IInstantiator BuildInstantiator(Mapping.Component component)
@@ -118,13 +116,13 @@ namespace NHibernate.Tuple.Component
 			//  return new ProxiedInstantiator(component);
 			//}
 
-			if (optimizer == null)
+			if (_optimizer == null)
 			{
 				return new PocoInstantiator(component, null);
 			}
 			else
 			{
-				return new PocoInstantiator(component, optimizer.InstantiationOptimizer);
+				return new PocoInstantiator(component, _optimizer.InstantiationOptimizer);
 			}
 		}
 
@@ -142,7 +140,7 @@ namespace NHibernate.Tuple.Component
 		{
 			if (Cfg.Environment.UseReflectionOptimizer)
 			{
-				optimizer = Cfg.Environment.BytecodeProvider.GetReflectionOptimizer(componentClass, getters, setters);
+				_optimizer = Cfg.Environment.BytecodeProvider.GetReflectionOptimizer(_componentClass.GetType(), getters, setters);
 			}
 		}
 
@@ -150,7 +148,7 @@ namespace NHibernate.Tuple.Component
 		{
 			if (hasCustomAccessors)
 			{
-				optimizer = null;
+				_optimizer = null;
 			}
 		}
 	}

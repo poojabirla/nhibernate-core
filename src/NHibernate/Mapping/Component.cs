@@ -14,7 +14,10 @@ namespace NHibernate.Mapping
 	public class Component : SimpleValue, IMetaAttributable
 	{
 		private readonly List<Property> properties = new List<Property>();
+
+		[NonSerialized]
 		private System.Type componentClass;
+
 		private bool embedded;
 		private Property parentProperty;
 		private PersistentClass owner;
@@ -133,18 +136,17 @@ namespace NHibernate.Mapping
 			get
 			{
 				// NH Different implementation (we use reflection only when needed)
-				if (componentClass == null)
+				if (componentClass != null) return componentClass;
+
+				try
 				{
-					try
-					{
-						componentClass = ReflectHelper.ClassForName(componentClassName);
-					}
-					catch (Exception cnfe)
-					{
-						if (!IsDynamic) // TODO remove this if leave the Exception
-							throw new MappingException("component class not found: " + componentClassName, cnfe);
-						return null;
-					}
+					componentClass = ReflectHelper.ClassForName(componentClassName);
+				}
+				catch (Exception cnfe)
+				{
+					if (!IsDynamic) // TODO remove this if leave the Exception
+						throw new MappingException("component class not found: " + componentClassName, cnfe);
+					return null;
 				}
 				return componentClass;
 			}
@@ -152,7 +154,9 @@ namespace NHibernate.Mapping
 			{
 				componentClass = value;
 				if (componentClass != null)
+				{
 					componentClassName = componentClass.AssemblyQualifiedName;
+				}
 			} 
 		}
 

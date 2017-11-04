@@ -98,9 +98,9 @@ namespace NHibernate.Type
 				{
 					return target;
 				}
-				if (session.GetContextEntityIdentifier(original) == null && (await (ForeignKeys.IsTransientFastAsync(associatedEntityName, original, session, cancellationToken)).ConfigureAwait(false)).GetValueOrDefault())
+				if (session.GetContextEntityIdentifier(original) == null && (await (ForeignKeys.IsTransientFastAsync(_associatedEntityName, original, session, cancellationToken)).ConfigureAwait(false)).GetValueOrDefault())
 				{
-					object copy = session.Factory.GetEntityPersister(associatedEntityName).Instantiate(null);
+					object copy = session.Factory.GetEntityPersister(_associatedEntityName).Instantiate(null);
 					//TODO: should this be Session.instantiate(Persister, ...)?
 					copyCache.Add(original, copy);
 					return copy;
@@ -129,7 +129,7 @@ namespace NHibernate.Type
 		/// <returns>
 		/// An instance of the object or <see langword="null" /> if the identifer was null.
 		/// </returns>
-		public override sealed async Task<object> NullSafeGetAsync(DbDataReader rs, string[] names, ISessionImplementor session, object owner, CancellationToken cancellationToken)
+		public sealed override async Task<object> NullSafeGetAsync(DbDataReader rs, string[] names, ISessionImplementor session, object owner, CancellationToken cancellationToken)
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			return await (ResolveIdentifierAsync(await (HydrateAsync(rs, names, session, owner, cancellationToken)).ConfigureAwait(false), session, owner, cancellationToken)).ConfigureAwait(false);
@@ -144,10 +144,10 @@ namespace NHibernate.Type
 		{
 			cancellationToken.ThrowIfCancellationRequested();
 			string entityName = GetAssociatedEntityName();
-			bool isProxyUnwrapEnabled = unwrapProxy && session.Factory
+			bool isProxyUnwrapEnabled = _unwrapProxy && session.Factory
 			                                                  .GetEntityPersister(entityName).IsInstrumented;
 
-			object proxyOrEntity = await (session.InternalLoadAsync(entityName, id, eager, IsNullable && !isProxyUnwrapEnabled, cancellationToken)).ConfigureAwait(false);
+			object proxyOrEntity = await (session.InternalLoadAsync(entityName, id, _eager, IsNullable && !isProxyUnwrapEnabled, cancellationToken)).ConfigureAwait(false);
 
 			if (proxyOrEntity.IsProxy())
 			{
@@ -178,21 +178,19 @@ namespace NHibernate.Type
 				{
 					return Task.FromResult<object>(null);
 				}
+
+				if (IsNull(owner, session))
+				{
+					return Task.FromResult<object>(null); //EARLY EXIT!
+				}
+
+				if (IsReferenceToPrimaryKey)
+				{
+					return ResolveIdentifierAsync(value, session, cancellationToken);
+				}
 				else
 				{
-					if (IsNull(owner, session))
-					{
-						return Task.FromResult<object>(null); //EARLY EXIT!
-					}
-
-					if (IsReferenceToPrimaryKey)
-					{
-						return ResolveIdentifierAsync(value, session, cancellationToken);
-					}
-					else
-					{
-						return LoadByUniqueKeyAsync(GetAssociatedEntityName(), uniqueKeyPropertyName, value, session, cancellationToken);
-					}
+					return LoadByUniqueKeyAsync(GetAssociatedEntityName(), uniqueKeyPropertyName, value, session, cancellationToken);
 				}
 			}
 			catch (Exception ex)

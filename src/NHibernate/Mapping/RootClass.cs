@@ -40,7 +40,7 @@ namespace NHibernate.Mapping
 		private bool mutable;
 		private bool embeddedIdentifier = false;
 		private bool explicitPolymorphism;
-		private System.Type entityPersisterClass;
+		private SerializableSystemType entityPersisterClass;
 		private bool forceDiscriminator;
 		private string where;
 		private Table table;
@@ -108,7 +108,7 @@ namespace NHibernate.Mapping
 
 		public override System.Type EntityPersisterClass
 		{
-			get { return entityPersisterClass; }
+			get { return (System.Type)entityPersisterClass; }
 			set { entityPersisterClass = value; }
 		}
 

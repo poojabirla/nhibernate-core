@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Reflection;
+using NHibernate.Util;
 
 namespace NHibernate.Transform
 {
@@ -33,7 +35,7 @@ namespace NHibernate.Transform
 	[Serializable]
 	public class AliasToBeanResultTransformer : AliasedTupleSubsetResultTransformer, IEquatable<AliasToBeanResultTransformer>
 	{
-		private readonly System.Type _resultClass;
+		private readonly SerializableSystemType _resultClass;
 		private readonly ConstructorInfo _beanConstructor;
 		private readonly Dictionary<string, NamedMember<FieldInfo>> _fieldsByNameCaseSensitive;
 		private readonly Dictionary<string, NamedMember<FieldInfo>> _fieldsByNameCaseInsensitive;
@@ -42,7 +44,7 @@ namespace NHibernate.Transform
 
 		public AliasToBeanResultTransformer(System.Type resultClass)
 		{
-			_resultClass = resultClass ?? throw new ArgumentNullException("resultClass");
+			_resultClass = resultClass ?? throw new ArgumentNullException(nameof(resultClass));
 
 			const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 			_beanConstructor = resultClass.GetConstructor(bindingFlags, null, System.Type.EmptyTypes, null);
@@ -58,7 +60,7 @@ namespace NHibernate.Transform
 
 			var fields = new List<RankedMember<FieldInfo>>();
 			var properties = new List<RankedMember<PropertyInfo>>();
-			FetchFieldsAndProperties(fields, properties);
+			FetchFieldsAndProperties(resultClass, fields, properties);
 
 			_fieldsByNameCaseSensitive = GetMapByName(fields, StringComparer.Ordinal);
 			_fieldsByNameCaseInsensitive = GetMapByName(fields, StringComparer.OrdinalIgnoreCase);
@@ -75,15 +77,15 @@ namespace NHibernate.Transform
 		{
 			if (aliases == null)
 			{
-				throw new ArgumentNullException("aliases");
+				throw new ArgumentNullException(nameof(aliases));
 			}
 			object result;
 
 			try
 			{
-				result = _resultClass.IsClass
+				result = _resultClass.GetType().IsClass
 							? _beanConstructor.Invoke(null)
-							: Cfg.Environment.BytecodeProvider.ObjectsFactory.CreateInstance(_resultClass, true);
+							: Cfg.Environment.BytecodeProvider.ObjectsFactory.CreateInstance(_resultClass.GetType(), true);
 
 				for (int i = 0; i < aliases.Length; i++)
 				{
@@ -137,7 +139,7 @@ namespace NHibernate.Transform
 			throw new PropertyNotFoundException(resultObj.GetType(), alias, "setter");
 		}
 
-		private bool TrySet(string alias, object value, object resultObj, Dictionary<string, NamedMember<FieldInfo>> fieldsMap)
+		private static bool TrySet(string alias, object value, object resultObj, Dictionary<string, NamedMember<FieldInfo>> fieldsMap)
 		{
 			if (fieldsMap.TryGetValue(alias, out var field))
 			{
@@ -148,7 +150,7 @@ namespace NHibernate.Transform
 			return false;
 		}
 
-		private bool TrySet(string alias, object value, object resultObj, Dictionary<string, NamedMember<PropertyInfo>> propertiesMap)
+		private static bool TrySet(string alias, object value, object resultObj, Dictionary<string, NamedMember<PropertyInfo>> propertiesMap)
 		{
 			if (propertiesMap.TryGetValue(alias, out var property))
 			{
@@ -159,7 +161,7 @@ namespace NHibernate.Transform
 			return false;
 		}
 
-		private void CheckMember<T>(NamedMember<T> member, string alias) where T : MemberInfo
+		private static void CheckMember<T>(NamedMember<T> member, string alias) where T : MemberInfo
 		{
 			if (member.Member != null)
 				return;
@@ -177,10 +179,9 @@ namespace NHibernate.Transform
 					$"{string.Join(", ", member.AmbiguousMembers.Select(m => m.Name))}");
 		}
 
-		private void FetchFieldsAndProperties(List<RankedMember<FieldInfo>> fields, List<RankedMember<PropertyInfo>> properties)
+		private static void FetchFieldsAndProperties(System.Type currentType, List<RankedMember<FieldInfo>> fields, List<RankedMember<PropertyInfo>> properties)
 		{
 			const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
-			var currentType = _resultClass;
 			var rank = 1;
 			// For grasping private members, we need to manually walk the hierarchy.
 			while (currentType != null && currentType != typeof(object))
@@ -199,7 +200,7 @@ namespace NHibernate.Transform
 			}
 		}
 
-		private int GetFieldVisibilityRank(FieldInfo field)
+		private static int GetFieldVisibilityRank(FieldInfo field)
 		{
 			if (field.IsPublic)
 				return 1;
@@ -212,7 +213,7 @@ namespace NHibernate.Transform
 			return 5;
 		}
 
-		private int GetPropertyVisibilityRank(PropertyInfo property)
+		private static int GetPropertyVisibilityRank(PropertyInfo property)
 		{
 			var setter = property.SetMethod;
 			if (setter.IsPublic)
@@ -226,7 +227,7 @@ namespace NHibernate.Transform
 			return 5;
 		}
 
-		private Dictionary<string, NamedMember<T>> GetMapByName<T>(IEnumerable<RankedMember<T>> members, StringComparer comparer) where T : MemberInfo
+		private static Dictionary<string, NamedMember<T>> GetMapByName<T>(IEnumerable<RankedMember<T>> members, StringComparer comparer) where T : MemberInfo
 		{
 			return members
 				.GroupBy(m => m.Member.Name,
@@ -259,19 +260,42 @@ namespace NHibernate.Transform
 				Name = name;
 				if (members.Length == 1)
 				{
-					Member = members[0];
-					AmbiguousMembers = null;
+					_member = Wrap(members[0]);
+					_ambiguousMembers = null;
 				}
 				else
 				{
-					Member = null;
-					AmbiguousMembers = members;
+					_member = null;
+					_ambiguousMembers = members.Select(Wrap).ToArray();
 				}
 			}
 
-			public string Name;
-			public T Member;
-			public T[] AmbiguousMembers;
+			public readonly string Name;
+			private readonly ISerializableMemberInfo _member;
+			private readonly ISerializableMemberInfo[] _ambiguousMembers;
+
+			public T Member => (T)_member?.Value;
+			public T[] AmbiguousMembers => _ambiguousMembers?.Select(x => (T)x.Value).ToArray();
+
+			private static ISerializableMemberInfo Wrap(T memberInfo)
+			{
+				if (typeof(T) == typeof(PropertyInfo))
+				{
+					return SerializablePropertyInfo.Wrap((PropertyInfo) (MemberInfo) memberInfo);
+				}
+				if (typeof(T) == typeof(FieldInfo))
+				{
+					return SerializableFieldInfo.Wrap((FieldInfo) (MemberInfo) memberInfo);
+				}
+				if (typeof(T) == typeof(MethodInfo))
+				{
+					return SerializableMethodInfo.Wrap((MethodInfo) (MemberInfo) memberInfo);
+				}
+
+				throw new InvalidOperationException(
+					string.Format("Could not convert {0} from type {1} to {2}",
+					              nameof(memberInfo), typeof(T), nameof(ISerializableMemberInfo)));
+			}
 		}
 
 		#endregion
