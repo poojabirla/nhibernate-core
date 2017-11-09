@@ -23,7 +23,7 @@ namespace NHibernate.Dialect
 	///		</listheader>
 	///		<item>
 	///			<term>connection.driver_class</term>
-	///			<description><see cref="NHibernate.Driver.MySqlDataDriver" /></description>
+	///			<description>NHibernate.Driver.MySqlDriver, NHibernate.Driver.MySql</description>
 	///		</item>
 	/// </list>
 	/// </remarks>
@@ -112,7 +112,7 @@ namespace NHibernate.Dialect
 			//functions:
 			RegisterFunctions();
 
-			DefaultProperties[Environment.ConnectionDriver] = "NHibernate.Driver.MySqlDataDriver";
+			DefaultProperties[Environment.ConnectionDriver] = "NHibernate.Driver.MySqlDriver, NHibernate.Driver.MySql";
 		}
 
 		#region private static readonly string[] DialectKeywords = { ... }

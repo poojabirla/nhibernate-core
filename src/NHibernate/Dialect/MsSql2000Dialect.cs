@@ -27,7 +27,7 @@ namespace NHibernate.Dialect
 	///	</listheader>
 	///	<item>
 	///		<term>connection.driver_class</term>
-	///		<description><see cref="NHibernate.Driver.SqlClientDriver" /></description>
+	///		<description>NHibernate.Driver.SqlServer2000Driver, NHibernate.Driver.SqlServer</description>
 	///	</item>
 	///	<item>
 	///		<term>adonet.batch_size</term>
@@ -68,7 +68,7 @@ namespace NHibernate.Dialect
 
 		protected virtual void RegisterDefaultProperties()
 		{
-			DefaultProperties[Environment.ConnectionDriver] = "NHibernate.Driver.SqlClientDriver";
+			DefaultProperties[Environment.ConnectionDriver] = "NHibernate.Driver.SqlServer2000Driver, NHibernate.Driver.SqlServer";
 			DefaultProperties[Environment.BatchSize] = "20";
 			DefaultProperties[Environment.QuerySubstitutions] = "true 1, false 0, yes 'Y', no 'N'";
 		}

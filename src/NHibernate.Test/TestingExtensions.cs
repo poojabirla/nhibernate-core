@@ -24,30 +24,51 @@ namespace NHibernate.Test
 			return typeof(OleDbDriver).IsAssignableFrom(driverClass);
 		}
 
-		public static bool IsSqlClientDriver(this IDriver driver)
+		/// <summary>
+		/// Matches both SQL Server 2000 and 2008 drivers
+		/// </summary>
+		public static bool IsSqlServerDriver(this IDriver driver)
 		{
-			return (driver is SqlClientDriver);
+#pragma warning disable 618
+			return (driver is SqlClientDriver) 
+#pragma warning restore 618
+				|| (driver is SqlServer2000Driver);
 		}
 
-		public static bool IsSqlClientDriver(this System.Type driverClass)
+		/// <summary>
+		/// Matches both SQL Server 2000 and 2008 drivers
+		/// </summary>
+		public static bool IsSqlServerDriver(this System.Type driverClass)
 		{
-			return typeof(SqlClientDriver).IsAssignableFrom(driverClass);
+#pragma warning disable 618
+			return typeof(SqlClientDriver).IsAssignableFrom(driverClass)
+#pragma warning restore 618
+				|| typeof(SqlServer2000Driver).IsAssignableFrom(driverClass);
 		}
 
-		public static bool IsSql2008ClientDriver(this IDriver driver)
+		public static bool IsSqlServer2008Driver(this IDriver driver)
 		{
-			return (driver is Sql2008ClientDriver);
+#pragma warning disable 618
+			return (driver is Sql2008ClientDriver)
+#pragma warning restore 618
+				|| (driver is SqlServer2008Driver);
 		}
 
-		public static bool IsMySqlDataDriver(this System.Type driverClass)
+		public static bool IsMySqlDriver(this System.Type driverClass)
 		{
-			return typeof(MySqlDataDriver).IsAssignableFrom(driverClass);
+#pragma warning disable 618
+			return typeof(MySqlDataDriver).IsAssignableFrom(driverClass)
+#pragma warning restore 618
+				|| typeof(MySqlDriver).IsAssignableFrom(driverClass);
 		}
 
 
-		public static bool IsFirebirdClientDriver(this IDriver driver)
+		public static bool IsFirebirdDriver(this IDriver driver)
 		{
-			return (driver is FirebirdClientDriver);
+#pragma warning disable 618
+			return (driver is FirebirdClientDriver)
+#pragma warning restore 618
+				|| (driver is FirebirdDriver);
 		}
 
 		/// <summary>
@@ -59,11 +80,18 @@ namespace NHibernate.Test
 		/// By clearing the connection pool the tables will get dropped. This is done by the following code.
 		/// Moved from NH1908 test case, contributed by Amro El-Fakharany.
 		/// </summary>
-		public static void ClearPoolForFirebirdClientDriver(this IDriver driver)
+		public static void ClearPoolForFirebirdDriver(this IDriver driver)
 		{
-			if (driver is FirebirdClientDriver fbDriver)
+			switch (driver)
 			{
-				fbDriver.ClearPool(null);
+#pragma warning disable 618
+				case FirebirdClientDriver fbDriver:
+					fbDriver.ClearPool(null);
+					break;
+#pragma warning restore 618
+				case FirebirdDriver fbDriver2:
+					fbDriver2.ClearPool(null);
+					break;
 			}
 		}
 
@@ -82,9 +110,12 @@ namespace NHibernate.Test
 			return (driver is OracleLiteDataClientDriver);
 		}
 
-		public static bool IsOracleManagedDataClientDriver(this IDriver driver)
+		public static bool IsOracleManagedDriver(this IDriver driver)
 		{
-            return (driver is OracleManagedDataClientDriver);
+#pragma warning disable 618
+            return (driver is OracleManagedDataClientDriver)
+#pragma warning restore 618
+				|| (driver is OracleManagedDriver);
 		}
 	}
 }

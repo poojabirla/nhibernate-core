@@ -23,7 +23,7 @@ namespace NHibernate.Dialect
 	///		</listheader>
 	///		<item>
 	///			<term>connection.driver_class</term>
-	///			<description><see cref="NHibernate.Driver.FirebirdClientDriver" /></description>
+	///			<description>NHibernate.Driver.FirebirdDriver, NHibernate.Driver.Firebird</description>
 	///		</item>
 	/// </list>
 	/// </remarks>
@@ -34,7 +34,7 @@ namespace NHibernate.Dialect
 			RegisterKeywords();
 			RegisterColumnTypes();
 			RegisterFunctions();
-			DefaultProperties[Environment.ConnectionDriver] = "NHibernate.Driver.FirebirdClientDriver";
+			DefaultProperties[Environment.ConnectionDriver] = "NHibernate.Driver.FirebirdDriver, NHibernate.Driver.Firebird";
 		}
 
 		public override string AddColumnString
