@@ -137,6 +137,7 @@ namespace NHibernate.Mapping
 			{
 				// NH Different implementation (we use reflection only when needed)
 				if (componentClass != null) return componentClass;
+				if (componentClassName == null) return null;
 
 				try
 				{
@@ -153,9 +154,9 @@ namespace NHibernate.Mapping
 			set // TODO NH: Remove the setter
 			{
 				componentClass = value;
-				if (componentClass != null)
+				if (value != null)
 				{
-					componentClassName = componentClass.AssemblyQualifiedName;
+					componentClassName = value.AssemblyQualifiedName;
 				}
 			} 
 		}
