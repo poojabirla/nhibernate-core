@@ -130,6 +130,11 @@ namespace NHibernate.Tuple
 
 		public void OnDeserialization(object sender)
 		{
+			if (_generateFieldInterceptionProxy)
+			{
+				throw new InvalidOperationException("IProxyFactory implementors are currently not serializable.");
+			}
+
 			_constructor = ReflectHelper.GetDefaultConstructor(_mappedClass.GetType());
 		}
 
